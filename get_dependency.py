@@ -3,22 +3,22 @@ import subprocess
 import shutil
 import re
 
-REGEX = r'([a-zA-Z]:[\\\/](?:[a-zA-Z0-9]+[^WINDOWS][\\\/])+.+\.dll\b)'# (.+\.dll)'
+REGEX = r'([a-zA-Z]:[\\\/](?:[a-zA-Z0-9]+[^WINDOWS][\\\/])+.+\.dll\b)'
 
 if __name__ == "__main__":
+    # Run ntldd process
     executable_path = input("Executable Path: ")
     output = subprocess.check_output(f"ntldd {executable_path}", shell=True).decode("utf-8")
 
-    file_paths = output.replace('\n', '').replace('\r', ' ').replace('\t','')
-    print(file_paths)
-
+    # Match REGEX
     file_paths = re.findall(REGEX, output)
-    print(file_paths)
     
+    # Create required_libraries
     if not os.path.exists("required_libraries"):
         os.mkdir("required_libraries")
-
     build_path = os.getcwd() + "\\required_libraries"
+
+    # Copy .dll files to build_path
     for filepath in file_paths:
         print("Retrieving " + filepath)
         try:
